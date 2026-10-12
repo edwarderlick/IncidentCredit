@@ -1,0 +1,29 @@
+networks:
+  default: studio_next
+
+  localnet:
+    url: "http://127.0.0.1:4000/api"
+    leader_only: false
+
+  studionet: {}
+
+  studio_next:
+    url: "https://studio-next.genlayer.com/api"
+    id: 61997
+    chain_type: studionet
+    accounts:
+      - "${ACCOUNT_PRIVATE_KEY_1}"
+      - "${ACCOUNT_PRIVATE_KEY_2}"
+
+  studio_devnet:
+    url: "https://studio-dev.genlayer.com/api"
+    id: 61997
+    chain_type: studionet
+    accounts:
+      - "${ACCOUNT_PRIVATE_KEY_1}"
+      - "${ACCOUNT_PRIVATE_KEY_2}"
+
+paths:
+  contracts: "contracts"
+
+environment: .env

@@ -1,0 +1,37 @@
+{
+  "rpc": "https://studio-next.genlayer.com/api",
+  "chainId": 61997,
+  "feePolicy": {
+    "enabled": true,
+    "genPerTimeUnit": "1",
+    "storageUnitPrice": "250000000",
+    "receiptGasPrice": "250000000",
+    "executionBudgetFloor": "76548000000000",
+    "timeUnitOverlayBps": "1500"
+  },
+  "estimate": {
+    "distribution": {
+      "leaderTimeunitsAllocation": "100",
+      "validatorTimeunitsAllocation": "200",
+      "appealRounds": "0",
+      "executionBudgetPerRound": "25000000000000000",
+      "executionConsumed": "0",
+      "totalMessageFees": "0",
+      "rotations": [
+        "3"
+      ],
+      "maxPriceGenPerTimeUnit": "2",
+      "storageFeeMaxGasPrice": "300000000",
+      "receiptFeeMaxGasPrice": "300000000"
+    },
+    "feeValue": "100000000000010352",
+    "policy": {
+      "enabled": true,
+      "genPerTimeUnit": "1",
+      "storageUnitPrice": "250000000",
+      "receiptGasPrice": "250000000",
+      "executionBudgetFloor": "76548000000000",
+      "timeUnitOverlayBps": "1500"
+    }
+  }
+}

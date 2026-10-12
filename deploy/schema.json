@@ -1,0 +1,180 @@
+{
+  "ctor": {
+    "params": [
+      [
+        "customer",
+        "address"
+      ],
+      [
+        "sla_text",
+        "string"
+      ],
+      [
+        "exclusions_json",
+        "string"
+      ],
+      [
+        "wei_per_minute",
+        "int"
+      ],
+      [
+        "max_credit_per_incident",
+        "int"
+      ],
+      [
+        "report_window_seconds",
+        "int"
+      ],
+      [
+        "claim_window_seconds",
+        "int"
+      ],
+      [
+        "resolution_window_seconds",
+        "int"
+      ],
+      [
+        "sunset_seconds",
+        "int"
+      ]
+    ],
+    "kwparams": {}
+  },
+  "methods": {
+    "claim": {
+      "params": [
+        [
+          "incident_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "expire_unclaimed": {
+      "params": [
+        [
+          "incident_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "fund_reserve": {
+      "params": [],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": true
+    },
+    "get_config": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "dict"
+    },
+    "get_credit": {
+      "params": [
+        [
+          "addr",
+          "address"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_exclusions": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "array"
+    },
+    "get_incident": {
+      "params": [
+        [
+          "incident_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "dict"
+    },
+    "get_incident_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_ledger": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "dict"
+    },
+    "record_incident": {
+      "params": [
+        [
+          "start_ts",
+          "int"
+        ],
+        [
+          "end_ts",
+          "int"
+        ],
+        [
+          "description",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "recover_unreserved": {
+      "params": [],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "resolve": {
+      "params": [
+        [
+          "incident_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "timeout_unresolved": {
+      "params": [
+        [
+          "incident_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "withdraw": {
+      "params": [],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    }
+  }
+}

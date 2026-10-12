@@ -1,0 +1,17 @@
+__pycache__/
+.pytest_cache/
+.gltest_cache/
+.venv/
+venv/
+.env
+node_modules/
+dist/
+deploy/*.compiled.js
+*.pyc
+*.keystore
+keystore.json
+.coverage
+htmlcov/
+artifacts/
+*.log
+

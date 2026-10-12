@@ -1,0 +1,37 @@
+{
+  "rpc": "https://studio-next.genlayer.com/api",
+  "chainId": 61997,
+  "contractAddress": "0x310376D1c50cfD421bCa28Dfc3A8057253d7954f",
+  "deployHash": "0x66f7688350131916c8e0511c848121275e5f4d357c50d7b6ebfc56dac8e5049d",
+  "customer": "0xac344A9aB8808d6fcfF1f8D18F794C3b24FE2634",
+  "provider": "0x74e8338F52617cBF3e4A2Aaa92ddA6665Ec4991F",
+  "weiPerMinute": "1000000000000000",
+  "maxCredit": "1000000000000000000",
+  "reportWindow": 86400,
+  "claimWindow": 3600,
+  "resolutionWindow": 3600,
+  "sunset": 2592000,
+  "statusName": "FINALIZED",
+  "execution": "FINISHED_WITH_RETURN",
+  "sourceSha256": "d431b69baaa2fa3a022cd8956ee9b217428719a998934d0a074026c790ddb05d",
+  "deployedSha256": "d431b69baaa2fa3a022cd8956ee9b217428719a998934d0a074026c790ddb05d",
+  "sourceMatch": true,
+  "fees": {
+    "feeValue": "100000000000010352",
+    "distribution": {
+      "leaderTimeunitsAllocation": "100",
+      "validatorTimeunitsAllocation": "200",
+      "appealRounds": "0",
+      "executionBudgetPerRound": "25000000000000000",
+      "executionConsumed": "0",
+      "totalMessageFees": "0",
+      "rotations": [
+        "3"
+      ],
+      "maxPriceGenPerTimeUnit": "2",
+      "storageFeeMaxGasPrice": "300000000",
+      "receiptFeeMaxGasPrice": "300000000"
+    }
+  },
+  "explorer": "https://explorer-studio-dev.genlayer.com/address/0x310376D1c50cfD421bCa28Dfc3A8057253d7954f"
+}

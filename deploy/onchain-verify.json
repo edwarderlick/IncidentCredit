@@ -1,0 +1,322 @@
+{
+  "verifiedAt": "2026-10-12T04:24:47.092Z",
+  "rpc": "https://studio-next.genlayer.com/api",
+  "chainId": 61997,
+  "localBytes": 33421,
+  "localSha256": "d431b69baaa2fa3a022cd8956ee9b217428719a998934d0a074026c790ddb05d",
+  "deployedBytes": 33421,
+  "deployedSha256": "d431b69baaa2fa3a022cd8956ee9b217428719a998934d0a074026c790ddb05d",
+  "sourceMatch": true,
+  "feePolicy": {
+    "enabled": true,
+    "genPerTimeUnit": "1",
+    "storageUnitPrice": "250000000",
+    "receiptGasPrice": "250000000",
+    "executionBudgetFloor": "76548000000000",
+    "timeUnitOverlayBps": "1500"
+  },
+  "estimate": {
+    "distribution": {
+      "leaderTimeunitsAllocation": "100",
+      "validatorTimeunitsAllocation": "200",
+      "appealRounds": "0",
+      "executionBudgetPerRound": "25000000000000000",
+      "executionConsumed": "0",
+      "totalMessageFees": "0",
+      "rotations": [
+        "3"
+      ],
+      "maxPriceGenPerTimeUnit": "2",
+      "storageFeeMaxGasPrice": "300000000",
+      "receiptFeeMaxGasPrice": "300000000"
+    },
+    "feeValue": "100000000000010352",
+    "policy": {
+      "enabled": true,
+      "genPerTimeUnit": "1",
+      "storageUnitPrice": "250000000",
+      "receiptGasPrice": "250000000",
+      "executionBudgetFloor": "76548000000000",
+      "timeUnitOverlayBps": "1500"
+    }
+  },
+  "canonical": {
+    "address": "0x310376D1c50cfD421bCa28Dfc3A8057253d7954f",
+    "available": true,
+    "get_ledger": {
+      "available": 0,
+      "conservation_ok": true,
+      "credited": 0,
+      "funded": 0,
+      "reserved": 0,
+      "returned": 0,
+      "withdrawn": 0
+    },
+    "get_incident_count": 0,
+    "get_config": {
+      "claim_window_seconds": 3600,
+      "customer": "0xac344A9aB8808d6fcfF1f8D18F794C3b24FE2634",
+      "deploy_ts": 1791775973,
+      "exclusions": [
+        {
+          "description": "Scheduled maintenance posted forty eight hours in advance",
+          "id": "scheduled_maintenance"
+        },
+        {
+          "description": "Regional power grid failure and other force majeure",
+          "id": "force_majeure"
+        },
+        {
+          "description": "Outages caused by invalid customer credentials",
+          "id": "customer_caused"
+        }
+      ],
+      "max_credit_per_incident": "1000000000000000000",
+      "provider": "0x74e8338F52617cBF3e4A2Aaa92ddA6665Ec4991F",
+      "report_window_seconds": 86400,
+      "resolution_window_seconds": 3600,
+      "sla_text": "Provider guarantees 99.9% monthly uptime for the production API. Scheduled maintenance windows posted forty eight hours in advance are excluded. Force majeure including regional power grid failure is excluded. Outages caused by invalid customer credentials are excluded.",
+      "sunset_seconds": 2592000,
+      "sunset_ts": 1794367973,
+      "timeout_bounty_bps": 100,
+      "wei_per_minute": 1000000000000000
+    }
+  },
+  "supersededCanonical": "0x6b1Ce0B7bb94b978fd3CE0fD5981119D8dcCA1b0",
+  "qualifying": {
+    "address": "0xDFFE30624166A0c5A7b7Bc41Aed0808a5C506FA4",
+    "available": true,
+    "get_ledger": {
+      "available": "41000000000000000",
+      "conservation_ok": true,
+      "credited": 0,
+      "funded": "100000000000000000",
+      "reserved": 0,
+      "returned": 0,
+      "withdrawn": "59000000000000000"
+    },
+    "get_incident_count": 1,
+    "get_config": {
+      "claim_window_seconds": 3600,
+      "customer": "0xac344A9aB8808d6fcfF1f8D18F794C3b24FE2634",
+      "deploy_ts": 1791775342,
+      "exclusions": [
+        {
+          "description": "Scheduled maintenance posted forty eight hours in advance",
+          "id": "scheduled_maintenance"
+        },
+        {
+          "description": "Regional power grid failure and other force majeure",
+          "id": "force_majeure"
+        },
+        {
+          "description": "Outages caused by invalid customer credentials",
+          "id": "customer_caused"
+        }
+      ],
+      "max_credit_per_incident": "1000000000000000000",
+      "provider": "0x74e8338F52617cBF3e4A2Aaa92ddA6665Ec4991F",
+      "report_window_seconds": 86400,
+      "resolution_window_seconds": 3600,
+      "sla_text": "Provider guarantees 99.9% monthly uptime for the production API. Scheduled maintenance windows posted forty eight hours in advance are excluded. Force majeure including regional power grid failure is excluded. Outages caused by invalid customer credentials are excluded.",
+      "sunset_seconds": 86400,
+      "sunset_ts": 1791861742,
+      "timeout_bounty_bps": 100,
+      "wei_per_minute": 1000000000000000
+    },
+    "incident0": {
+      "citation": "No maintenance notice was posted.",
+      "claim_ts": 1791775454,
+      "computed_minutes": 59,
+      "consequence": "QUALIFYING",
+      "credit_wei": "59000000000000000",
+      "description": "API returned HTTP 500 for all /v1/orders requests due to a failed database failover. No maintenance notice was posted.",
+      "downtime_minutes": 59,
+      "end_ts": 1791775351,
+      "id": "0",
+      "max_possible_credit_wei": "59000000000000000",
+      "payout_marker": "CONSUMED",
+      "recorded_ts": 1791775415,
+      "reserved_wei": 0,
+      "start_ts": 1791771811,
+      "status": "QUALIFYING"
+    }
+  },
+  "excluded": {
+    "address": "0x36Cd12BF7f25D5CBFaB31Db77BDab4a30149EA06",
+    "available": true,
+    "get_ledger": {
+      "available": "100000000000000000",
+      "conservation_ok": true,
+      "credited": 0,
+      "funded": "100000000000000000",
+      "reserved": 0,
+      "returned": 0,
+      "withdrawn": 0
+    },
+    "get_incident_count": 1,
+    "get_config": {
+      "claim_window_seconds": 3600,
+      "customer": "0xac344A9aB8808d6fcfF1f8D18F794C3b24FE2634",
+      "deploy_ts": 1791775640,
+      "exclusions": [
+        {
+          "description": "Scheduled maintenance posted forty eight hours in advance",
+          "id": "scheduled_maintenance"
+        },
+        {
+          "description": "Regional power grid failure and other force majeure",
+          "id": "force_majeure"
+        },
+        {
+          "description": "Outages caused by invalid customer credentials",
+          "id": "customer_caused"
+        }
+      ],
+      "max_credit_per_incident": "1000000000000000000",
+      "provider": "0x74e8338F52617cBF3e4A2Aaa92ddA6665Ec4991F",
+      "report_window_seconds": 86400,
+      "resolution_window_seconds": 3600,
+      "sla_text": "Provider guarantees 99.9% monthly uptime for the production API. Scheduled maintenance windows posted forty eight hours in advance are excluded. Force majeure including regional power grid failure is excluded. Outages caused by invalid customer credentials are excluded.",
+      "sunset_seconds": 86400,
+      "sunset_ts": 1791862040,
+      "timeout_bounty_bps": 100,
+      "wei_per_minute": 1000000000000000
+    },
+    "incident0": {
+      "citation": "scheduled maintenance window posted forty eight hours in advance",
+      "claim_ts": 1791775770,
+      "computed_minutes": 59,
+      "consequence": "scheduled_maintenance",
+      "credit_wei": 0,
+      "description": "API was unavailable during the scheduled maintenance window posted forty eight hours in advance for a cluster upgrade.",
+      "downtime_minutes": 0,
+      "end_ts": 1791775663,
+      "id": "0",
+      "max_possible_credit_wei": "59000000000000000",
+      "payout_marker": "RELEASED",
+      "recorded_ts": 1791775727,
+      "reserved_wei": 0,
+      "start_ts": 1791772123,
+      "status": "EXCLUDED"
+    }
+  },
+  "timeout": {
+    "address": "0xF7ddecd7d7c119fBa7bd9664FAaBE3eeeFD19267",
+    "available": true,
+    "get_ledger": {
+      "available": "41000000000000000",
+      "conservation_ok": true,
+      "credited": 0,
+      "funded": "100000000000000000",
+      "reserved": 0,
+      "returned": 0,
+      "withdrawn": "59000000000000000"
+    },
+    "get_incident_count": 1,
+    "get_config": {
+      "claim_window_seconds": 3600,
+      "customer": "0xac344A9aB8808d6fcfF1f8D18F794C3b24FE2634",
+      "deploy_ts": 1791774457,
+      "exclusions": [
+        {
+          "description": "Scheduled maintenance posted forty eight hours in advance",
+          "id": "scheduled_maintenance"
+        },
+        {
+          "description": "Regional power grid failure and other force majeure",
+          "id": "force_majeure"
+        },
+        {
+          "description": "Outages caused by invalid customer credentials",
+          "id": "customer_caused"
+        }
+      ],
+      "max_credit_per_incident": "1000000000000000000",
+      "provider": "0x74e8338F52617cBF3e4A2Aaa92ddA6665Ec4991F",
+      "report_window_seconds": 86400,
+      "resolution_window_seconds": 60,
+      "sla_text": "Provider guarantees 99.9% monthly uptime for the production API. Scheduled maintenance windows posted forty eight hours in advance are excluded. Force majeure including regional power grid failure is excluded. Outages caused by invalid customer credentials are excluded.",
+      "sunset_seconds": 86400,
+      "sunset_ts": 1791860857,
+      "timeout_bounty_bps": 100,
+      "wei_per_minute": 1000000000000000
+    },
+    "incident0": {
+      "citation": "",
+      "claim_ts": 1791774581,
+      "computed_minutes": 59,
+      "consequence": "TIMEOUT_CREDIT",
+      "credit_wei": "59000000000000000",
+      "description": "API returned HTTP 500 for all /v1/orders requests due to a failed database failover. No maintenance notice was posted.",
+      "downtime_minutes": 59,
+      "end_ts": 1791774475,
+      "id": "0",
+      "max_possible_credit_wei": "59000000000000000",
+      "payout_marker": "CONSUMED",
+      "recorded_ts": 1791774539,
+      "reserved_wei": 0,
+      "start_ts": 1791770935,
+      "status": "TIMEOUT"
+    }
+  },
+  "sunset": {
+    "address": "0xa9416e31E008a7AA1376f879D47Aa234F6379C31",
+    "available": true,
+    "get_ledger": {
+      "available": 0,
+      "conservation_ok": true,
+      "credited": 0,
+      "funded": "100000000000000000",
+      "reserved": 0,
+      "returned": "100000000000000000",
+      "withdrawn": 0
+    },
+    "get_incident_count": 1,
+    "get_config": {
+      "claim_window_seconds": 60,
+      "customer": "0xac344A9aB8808d6fcfF1f8D18F794C3b24FE2634",
+      "deploy_ts": 1791774860,
+      "exclusions": [
+        {
+          "description": "Scheduled maintenance posted forty eight hours in advance",
+          "id": "scheduled_maintenance"
+        },
+        {
+          "description": "Regional power grid failure and other force majeure",
+          "id": "force_majeure"
+        },
+        {
+          "description": "Outages caused by invalid customer credentials",
+          "id": "customer_caused"
+        }
+      ],
+      "max_credit_per_incident": "1000000000000000000",
+      "provider": "0x74e8338F52617cBF3e4A2Aaa92ddA6665Ec4991F",
+      "report_window_seconds": 86400,
+      "resolution_window_seconds": 60,
+      "sla_text": "Provider guarantees 99.9% monthly uptime for the production API. Scheduled maintenance windows posted forty eight hours in advance are excluded. Force majeure including regional power grid failure is excluded. Outages caused by invalid customer credentials are excluded.",
+      "sunset_seconds": 360,
+      "sunset_ts": 1791775220,
+      "timeout_bounty_bps": 100,
+      "wei_per_minute": 1000000000000000
+    },
+    "incident0": {
+      "citation": "",
+      "claim_ts": 0,
+      "computed_minutes": 59,
+      "consequence": "",
+      "credit_wei": 0,
+      "description": "API returned HTTP 500 for all /v1/orders requests due to a failed database failover. No maintenance notice was posted.",
+      "downtime_minutes": 0,
+      "end_ts": 1791774916,
+      "id": "0",
+      "max_possible_credit_wei": "59000000000000000",
+      "payout_marker": "RELEASED",
+      "recorded_ts": 1791774980,
+      "reserved_wei": 0,
+      "start_ts": 1791771376,
+      "status": "UNCLAIMED"
+    }
+  }
+}

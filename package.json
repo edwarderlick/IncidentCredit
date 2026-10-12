@@ -1,0 +1,19 @@
+{
+  "name": "incidentcredit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "genvm-lint lint contracts/incidentcredit.py --json",
+    "test:direct": "python -m pytest tests/direct/ -v --tb=short",
+    "test:integration": "node tests/integration/run_live.mjs all",
+    "verify:onchain": "node tests/integration/verify_onchain.mjs",
+    "deploy": "tsx deploy/deployScript.ts"
+  },
+  "dependencies": {
+    "genlayer-js": "2.0.0-rc.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
+}
+

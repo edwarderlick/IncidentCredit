@@ -1,6 +1,6 @@
 # IncidentCredit
 
-**IncidentCredit** is a bilateral, frozen-SLA service-credit escrow primitive built natively for GenLayer Studio Next (test GEN, Chain ID `61997`). It allows an infrastructure provider and enterprise customer to lock an agreed SLA and exclusion schedule on-chain; when an acknowledged outage occurs, decentralized validator consensus evaluates the incident text directly against the frozen exclusion terms to determine compensation without trusted oracles or intermediaries.
+**IncidentCredit** is a bilateral, frozen-SLA service-credit escrow primitive built natively for GenLayer Studio Next (test GEN, Chain ID `61997`). An infrastructure provider deploys the contract with a designated customer address and freezes the SLA terms and exclusion schedule on-chain while funding a GEN reserve (the customer does not accept terms on-chain; their participation begins when filing claims for recorded incidents). When an acknowledged outage occurs, decentralized validator consensus evaluates the incident text directly against the frozen exclusion terms to determine credit eligibility without trusted oracles or intermediaries.
 
 This repository contains the smart contract ([contracts/incidentcredit.py](contracts/incidentcredit.py)), the direct test suite ([tests/direct/test_incidentcredit.py](tests/direct/test_incidentcredit.py)), reproducible Studio Next deployment and verification scripts, the ABI schema ([deploy/schema.json](deploy/schema.json)), and on-chain verification snapshots. There is no frontend or Transaction Kit.
 
@@ -11,25 +11,25 @@ This repository contains the smart contract ([contracts/incidentcredit.py](contr
 Traditional smart contract escrows require rigid, structured oracles, centralized multi-sigs, or trusted administrative keys to report whether an outage breached an SLA or fell under an agreed contractual exception (such as scheduled maintenance, force majeure, or customer credential error). 
 
 GenLayer makes AI consensus consequential by executing non-deterministic LLM evaluation directly within the validator execution loop:
-1. **Decentralized Evaluation**: Multiple independent validators read the frozen incident description and the frozen exclusion clauses, executing an isolated non-deterministic inference call (`gl.nondet.call_llm`).
-2. **Equivalence Principle**: Validators reach consensus on the classification (`QUALIFYING` vs. a specific matched exclusion ID like `scheduled_maintenance`) and supporting text citation directly from the contract terms.
+1. **Decentralized Evaluation**: The contract runs classification using `exec_prompt` (with `response_format="json"`) inside `gl.vm.run_nondet(leader_fn, validator_fn)`.
+2. **Equivalence Principle**: Validators independently agree on the consequential classification (`consequence`, either `QUALIFYING` or an exact configured exclusion ID). The leader also extracts a supporting citation substring from the contract or incident text, but validator consensus determines equivalence on the consequential classification itself.
 3. **Deterministic Financial Settlement**: The model never emits wei amounts, percentage splits, timestamps, or recipient addresses. Once consensus determines the classification, deterministic on-chain Python logic computes exact wei credit from integer downtime minutes multiplied by `wei_per_minute` (capped by `max_credit_per_incident` and reserved escrow). Escrow is automatically adjusted without human intervention.
 
 ---
 
 ## Frozen Inputs
 
-When initialized, the contract locks all contractual terms permanently:
+When initialized, the provider deploys the contract and freezes all terms permanently:
 - `provider`: Authorized infrastructure provider address who funds the reserve and records outages.
-- `customer`: Authorized customer address entitled to file claims and receive service credits.
-- `sla_text`: Immutable textual representation of the service level agreement (20 to 2,000 characters).
-- `exclusions_json`: Schema-validated immutable array of contractual exclusions (1 to 8 items). Each exclusion specifies a unique `id` (2 to 32 characters, alphanumeric/dashes/underscores) and a plain-text `description` (10 to 200 characters).
+- `customer`: Designated customer address entitled to file claims and withdraw service credits.
+- `sla_text`: Immutable textual representation of the service level agreement (32 to 4,000 characters).
+- `exclusions_json`: Schema-validated immutable array of contractual exclusions (1 to 8 items). Each exclusion specifies a unique `id` (1 to 32 characters, lowercase alphanumeric and underscores matching `^[a-z0-9_]+$`) and a plain-text `description` (1 to 200 characters).
 - `wei_per_minute`: Fixed rate of service credit wei accrued per whole integer minute of downtime.
 - `max_credit_per_incident`: Hard ceiling on the maximum credit payable for any single outage incident.
-- `report_window_seconds`: Permissible window following outage end for provider to record it (60s to 30 days).
-- `claim_window_seconds`: Permissible window following incident recording for customer to file a claim (60s to 30 days).
-- `resolution_window_seconds`: Permissible window for validator consensus resolution before timeout (60s to 30 days).
-- `sunset_seconds`: Total lifespan of the contract after deployment before leftover funds can be reclaimed (at least `claim_window + resolution_window + 60s`, up to 365 days).
+- `report_window_seconds`: Permissible window following outage end for provider to record it (60s to 2,592,000s / 30 days).
+- `claim_window_seconds`: Permissible window following incident recording for customer to file a claim (60s to 2,592,000s / 30 days).
+- `resolution_window_seconds`: Permissible window for validator consensus resolution before timeout (60s to 2,592,000s / 30 days).
+- `sunset_seconds`: Total lifespan of the contract after deployment before leftover funds can be reclaimed (minimum `claim_window_seconds + resolution_window_seconds`, maximum 2,592,000 seconds / 30 days).
 
 ---
 
@@ -59,22 +59,22 @@ deploy (provider, customer, SLA, exclusions, rate, cap, windows)
 ```
 
 ### Transition Specifications:
-- `deploy`: Sets all configuration parameters and calculates `sunset_ts = deploy_ts + sunset_seconds`. Ledger starts unfunded (`funded = 0`).
+- `deploy`: Sets all configuration parameters and calculates `sunset_ts = deploy_ts + sunset_seconds`. Ledger starts unfunded (`funded = 0`). The customer does not sign or accept on-chain; deployment is performed by the provider.
 - `fund_reserve` (provider only, payable): Adds deposited value to `available` and `funded`.
-- `record_incident` (provider only): Records past non-overlapping downtime interval. Asserts `start_ts < end_ts <= now`, `(now - end_ts) <= report_window_seconds`, and crucially `now + claim_window + resolution_window <= sunset_ts`. Initial status: `RECORDED`.
+- `record_incident` (provider only): Records a past non-overlapping downtime interval. Asserts `start_ts < end_ts <= now`, `(now - end_ts) <= report_window_seconds`, description length between 16 and 1,000 characters, incident count below 16, and `now + claim_window + resolution_window <= sunset_ts`. Initial status: `RECORDED`.
 - `expire_unclaimed` (anyone): Callable if `now > recorded_ts + claim_window_seconds` and status is `RECORDED`. Sets status to `UNCLAIMED`, marker to `RELEASED`. No funds were ever reserved.
 - `claim` (customer only): Callable while `now <= recorded_ts + claim_window_seconds`. Computes `max_possible_credit_wei = min(minutes * wei_per_minute, max_credit_per_incident)`. Sets `reserved_wei = min(max_possible_credit, available)`. Moves `reserved_wei` from `available` to `reserved`. Sets status to `CLAIMED` and opens the resolution window.
-- `resolve` (anyone): Runs non-deterministic LLM classification via GenLayer validators.
+- `resolve` (anyone): Runs non-deterministic LLM classification via `exec_prompt` inside `gl.vm.run_nondet(leader_fn, validator_fn)`.
   - If classified `QUALIFYING`: credit amount is computed. `credited[customer] += credit_wei`. Remaining reservation `(reserved_wei - credit_wei)` returns to `available`. Status becomes `QUALIFYING`, payout marker becomes `CONSUMED`.
   - If classified as an exclusion ID: full `reserved_wei` returns to `available`. Status becomes `EXCLUDED`, payout marker becomes `RELEASED`.
-  - Second `resolve` attempt on an incident with a payout marker set strictly reverts.
+  - A second `resolve` call on an incident with a payout marker set strictly reverts.
 - `timeout_unresolved` (anyone): Callable if `now > claim_ts + resolution_window_seconds` and status remains `CLAIMED`. Executes the defensible timeout rule.
-- `recover_unreserved` (provider only): Callable only when `now >= sunset_ts`. Moves all remaining unreserved `available` funds to `credited[provider]`. Sets `available = 0`.
-- `withdraw` (beneficiary only): Executes Checks-Effects-Interactions (CEI) to transfer accumulated `credited[msg.sender]` via `emit_transfer`.
+- `recover_unreserved` (provider only): Callable only when `now >= sunset_ts` and no claim or resolution windows remain open. Moves all remaining unreserved `available` funds to `credited[provider]`. Sets `available = 0`.
+- `withdraw` (beneficiary only): Executes Checks-Effects-Interactions (CEI) to decrement accumulated `credited[msg.sender]` and emit `_Recipient(to).emit_transfer(value=amount)`.
 
 ---
 
-## Defensible Timeout Rule & Moral Hazard Resolution
+## Defensible Timeout Rule & Protocol Design Choice
 
 In early prototype designs, if an incident timed out without validator resolution, the held reserve returned to the provider’s available balance. This created a severe **moral hazard**: if an outage was undeniably qualifying, the service provider was financially incentivized to delay consensus, submit malicious appeal rotations, or simply invoke `timeout_unresolved` themselves to avoid paying the customer.
 
@@ -85,9 +85,9 @@ IncidentCredit implements an incentive-aligned timeout policy:
 
 Any excess reservation above `max_possible_credit_wei` returns to `available`. Payout marker is set to `CONSUMED`.
 
-### Tradeoff Analysis
-- **Commercial Rationale**: Under standard enterprise SLA doctrine, an acknowledged downtime event documented by the provider is legally presumed compensable unless an agreed contractual exclusion is proven within the dispute resolution window. Defaulting to customer credit upon resolution timeout enforces accountability on both the provider and the validator network.
-- **Tradeoff**: In the improbable event of an extended validator consensus outage during a genuinely excluded incident (e.g., scheduled maintenance), the customer receives default credit once the resolution window expires. This tradeoff is managed by selecting an appropriately sized `resolution_window_seconds` (e.g., 1 hour to 24 hours in production) to give validators adequate time to reach consensus.
+### Protocol Design Rationale
+- **Design Choice**: The contract deliberately adopts this timeout rule as a conscious protocol design choice: an acknowledged downtime event documented by the provider defaults to compensable credit unless validator consensus affirmatively classifies an agreed contractual exclusion within the resolution window. Defaulting to customer credit on timeout eliminates the provider's moral hazard of intentionally delaying resolution to retain escrow.
+- **Tradeoff**: In the event of an extended validator consensus stall during an outage that might have matched an exclusion (e.g., scheduled maintenance), the customer receives default credit once the resolution window expires. This tradeoff is managed by selecting an appropriately sized `resolution_window_seconds` (e.g., 1 hour to 24 hours in production) to give validators adequate time to reach consensus.
 
 ---
 
@@ -98,11 +98,11 @@ The contract strictly enforces money conservation across all state transitions:
 $$\text{available} + \text{reserved} + \text{credited} + \text{withdrawn} + \text{returned} == \text{funded}$$
 
 - **Checks-Effects-Interactions (CEI)**: Credit balances are decremented before calling `emit_transfer`. Every credit can be emitted at most once. Calling `withdraw` with zero balance immediately reverts with `"no credit"`.
-- **Queued vs. Finalized Transfers**: Calling `_Recipient(to).emit_transfer(value=amount)` in GenLayer emits an outbound transfer message within the transaction execution context. A queued message is not independent proof of final external settlement until the transaction reaches `FINALIZED` consensus.
-- **What On-Chain Records Prove**: The finalized withdraw transaction and ledger prove that:
-  1. The on-contract `credited` balance was legitimately earned through consensus or timeout.
-  2. The credit was deducted atomically from the ledger.
-  3. The transfer was successfully executed by the GenLayer VM, permanently incrementing `withdrawn` (for customer credits) or `returned` (for provider sunset recoveries).
+- **Emitted / Queued Transfers in the Ledger**: Calling `_Recipient(to).emit_transfer(value=amount)` in GenLayer queues an outbound transfer message within the transaction execution context. The ledger records:
+  - `credited`: On-contract balance accrued and awaiting withdrawal by customer or provider.
+  - `withdrawn`: Accumulated amounts for which `emit_transfer` was invoked to customer addresses.
+  - `returned`: Accumulated amounts for which `emit_transfer` was invoked back to the provider after sunset.
+- **What On-Chain Records Prove**: The finalized withdraw transaction and ledger prove that the on-contract credit was legitimately deducted and that the VM successfully executed and emitted the transfer message. The ledger alone is an accounting record of emitted outbound transfers, not external cryptographic proof of final receipt at an off-chain bank or third-party balance.
 
 ---
 
@@ -110,16 +110,17 @@ $$\text{available} + \text{reserved} + \text{credited} + \text{withdrawn} + \tex
 
 | Parameter | Minimum | Maximum | Notes |
 | :--- | :--- | :--- | :--- |
-| `sla_text` | 20 chars | 2,000 chars | Frozen at deployment |
+| `sla_text` | 32 chars | 4,000 chars | Set by provider at deployment |
 | `exclusions` count | 1 item | 8 items | Schema-validated JSON array |
-| Exclusion `id` | 2 chars | 32 chars | Regex: `^[a-z0-9_-]+$` |
-| Exclusion `description` | 10 chars | 200 chars | Non-empty plain text |
-| Incident `description` | 20 chars | 500 chars | Frozen fact description |
+| Exclusion `id` | 1 char | 32 chars | Regex: `^[a-z0-9_]+$` (no hyphens) |
+| Exclusion `description` | 1 char | 200 chars | Non-empty plain text |
+| Incident `description` | 16 chars | 1,000 chars | Provider-recorded incident text |
+| Maximum incidents | — | 16 incidents | Hard cap on total incidents recorded |
 | Outage Interval | 1 second | 30 days (2,592,000s) | Integer minutes computed on-chain |
 | `report_window_seconds` | 60 seconds | 30 days (2,592,000s) | Post-incident report window |
 | `claim_window_seconds` | 60 seconds | 30 days (2,592,000s) | Post-record claim window |
 | `resolution_window_seconds`| 60 seconds | 30 days (2,592,000s) | Claim-to-resolution window |
-| `sunset_seconds` | `claim + res + 60s` | 365 days (31,536,000s) | Lifecycle boundary |
+| `sunset_seconds` | `claim_window + resolution_window` | 30 days (2,592,000s) | Total contract lifecycle boundary |
 
 ---
 
@@ -129,6 +130,7 @@ $$\text{available} + \text{reserved} + \text{credited} + \text{withdrawn} + \tex
 2. **Native Test GEN Only**: Designed for native GEN escrow; does not support ERC-20 tokens or multi-token reserves.
 3. **Integer Minutes Resolution**: Downtime is computed in whole integer minutes (`(end_ts - start_ts) // 60`). Fractional seconds do not accrue fractional credit.
 4. **Provider-Initiated Outages**: Outage intervals must be recorded by the provider (acknowledged incidents). The contract does not ingest raw client telemetry or ping monitors.
+5. **No Customer On-Chain Acceptance**: The provider deploys and funds the contract unilaterally with the customer address; customer rights are exercised by claiming recorded incidents.
 
 ---
 
